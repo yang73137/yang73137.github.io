@@ -1,10 +1,6 @@
-﻿EndingUI = ClassFactory.createClass(UIBase, {
-    init: function() {
+﻿stageUI = ClassFactory.createClass(UIBase, {
+    init: function () {
         UIBase.init.call(this);
-
-        this.setSize(Const.SCREEN_WIDTH, Const.SCREEN_HEIGHT);
-        this.setBackground("#000000");
-        this.setPosition(0, 0);
 
         // game over logo
         this.logo = new Layer();
@@ -14,12 +10,15 @@
         this.logo.show();
         this.append(this.logo);
 
+        this.setSize(Const.SCREEN_WIDTH, Const.SCREEN_HEIGHT);
+        this.setPosition(0, 0);
+
         this.counter = new Counter(180, false, true);
     },
-    onEnter: function() {
+    onEnter: function () {
         this.show();
     },
-    onLevel: function() {
+    onLevel: function () {
         this.hide();
     },
     onUpdate: function () {

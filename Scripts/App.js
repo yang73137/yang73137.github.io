@@ -1,21 +1,31 @@
-﻿App = {
+﻿UIMode = {
+    Opening: 0,
+    Stage: 1,
+    Game: 2,
+    Score: 3,
+    Ending: 4
+};
+
+App = {
     init: function () {
         this.container = document.getElementById("app");
 
         this.openingUI = new OpeningUI();
         this.openingUI.appendTo(this.container);
 
+        this.stageUI = new StageUI();
+        this.stageUI.appendTo(this.container);
+
         this.gameUI = new GameUI();
         this.gameUI.appendTo(this.container);
+
+        this.scoreUI = new ScoreUI();
+        this.scoreUI.appendTo(this.container);
 
         this.endingUI = new EndingUI();
         this.endingUI.appendTo(this.container);
 
-        this.tanks = [];
-
-        this.scenes = [this.openingUI, this.gameUI, this.endingUI];
-        this.scenesIndex = -1;
-        
+        this.mode = UIMode.Opening;
     },
     process: function (src, loaded, total) {
         /*
@@ -26,21 +36,8 @@
 
         App.init();
 
-        if (App.scenesIndex == -1) {
-            App.scenesIndex = 0;
-            App.scenes[0].enter();
-        }
-        var app = App;
-        setInterval(function () {
-            if (!app.scenes[app.scenesIndex].update()) {
-                app.scenes[app.scenesIndex].level();
-                app.scenesIndex++;
-                if (app.scenesIndex == app.scenes.length) {
-                    app.scenesIndex = 0;
-                }
-                app.scenes[app.scenesIndex].enter();
-            }
-        }, 16);
+        this.openingUI.enter();
+        App.onTimer();
     },
     error: function (src, loaded, total) {
         alert("加载图片 " + src + " 出错");
@@ -49,6 +46,58 @@
         */
     },
     run: function () {
-        ImageLoader.load(this, ["../Images/Boom.png", "../Images/Frag.png", "../Images/Misc.png", "../Images/Tank.png", "../Images/Terr.png", "../Images/UI.png"]);
+        ImageLoader.load(this, [Const.IMAGE_BOOM.src, Const.IMAGE_MISC.src, Const.IMAGE_TANK.src, Const.IMAGE_TERR.src, Const.IMAGE_UI.src]);
+    },
+    onTimer: function () {
+        setInterval(function () {
+            var app = App;
+            switch (app.mode) {
+                case UIMode.Opening:
+                    if (!app.openingUI.update()) {
+                        app.openingUI.level();
+                        app.stageUI.enter();
+                        app.mode = UIMode.Stage;
+                    }
+                    break;
+                case UIMode.Stage:
+                    if (!app.stageUI.update()) {
+                        app.stageUI.level();
+                        app.gameUI.setStage(app.stageUI.stage);
+                        app.gameUI.enter();
+                        app.mode = UIMode.Game;
+                    }
+                    break;
+                case UIMode.Game:
+                    if (!app.gameUI.update()) {
+                        app.gameUI.level();
+                        var scoreData = app.gameUI.getScoreData();
+                        app.scoreUI.setData(scoreData.stage, scoreData.player1Score, scoreData.enemy1Number, scoreData.enemy2Number, scoreData.enemy3Number, scoreData.enemy4Number);
+                        app.scoreUI.enter();
+                        app.mode = UIMode.Score;
+                    }
+                    break;
+                case UIMode.Score:
+                    if (!app.scoreUI.update()) {
+                        app.scoreUI.level();
+                        if (app.gameUI.isFailed()) {
+                            app.stageUI.setStageChangedEnabled(true);
+                            app.endingUI.enter();
+                            app.mode = UIMode.Ending;
+                        } else {
+                            app.gameUI.setStage(++app.gameUI.stage);
+                            app.gameUI.enter();
+                            app.mode = UIMode.Game;
+                        }
+                    }
+                    break;
+                case UIMode.Ending:
+                    if (!app.endingUI.update()) {
+                        app.endingUI.level();
+                        app.openingUI.enter();
+                        app.mode = UIMode.Opening;
+                    }
+                    break;
+            }
+        }, 16);
     }
 };

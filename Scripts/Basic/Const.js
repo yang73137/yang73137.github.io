@@ -9,10 +9,12 @@ var Const =
 	//
 	MAX_STAGE: 35,				// 总关数
 	MAX_TANK: 5,				// 最大坦克数
+	MAX_SCORE: 20000,
 
-	TIME_BULPRF_DEF: 250,		// 出生防弹时间
-	TIME_BULPRF_BONUS: 1200,	// 奖励防弹时间
-	TIME_WALL_IRON: 1200,		// 总部铁墙保护时间
+	TIME_BULPRF_DEF: 180,		// 出生防弹时间
+	TIME_BULPRF_BONUS: 720,	// 奖励防弹时间
+	TIME_WALL_IRON: 960,		// 总部铁墙保护时间
+	TIME_STOP_BONUS: 300,
 
 
 	//
@@ -68,11 +70,11 @@ var Const =
 	DIRECTION_DOWN: 2,
 	DIRECTION_LEFT: 3,
 
-	IMAGE_TANK: { src: "../Images/Tank.png", width: 4064, height: 32 },
-    IMAGE_BOOM: { src: "../Images/Boom.png", width: 320, height: 64 },
-    IMAGE_MISC: { src: "../Images/Misc.png", width: 160, height: 32 },
-    IMAGE_UI: { src: "../Images/UI.png", width: 376, height: 320 },
-    IMAGE_TERR: { src: "../Images/Terr.png", width: 1152, height: 32 },
+	IMAGE_TANK: { src: "./Images/Tank.png", width: 4064, height: 32 },
+    IMAGE_BOOM: { src: "./Images/Boom.png", width: 320, height: 64 },
+    IMAGE_MISC: { src: "./Images/Misc.png", width: 160, height: 32 },
+    IMAGE_UI: { src: "./Images/UI.png", width: 376, height: 320 },
+    IMAGE_TERR: { src: "./Images/Terr.png", width: 1152, height: 32 },
 
 
     SCREEN_WIDTH: 512,

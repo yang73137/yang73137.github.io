@@ -73,19 +73,24 @@ Block = ClassFactory.createClass(GameObject, {
     addToGameUI: function (gameUI) {
         GameObject.prototype.addToGameUI.call(this, gameUI);
         gameUI.gameArea.append(this.sprite);
-        gameUI.gameArea.append(this.bomb);
+        gameUI.gameArea.append(this.baseBomb);
 
         this.sprite.moveToFrame(0);
     },
     hit: function (areaIndex) {
-
+        
         this.area[areaIndex] = false;
 
         if (this.typeId == BlockTypeId.Base1 && !this.gameUI.baseDestoryed) {
+            this.typeId = BlockTypeId.Base2;
             this.sprite.setFrameSequence(BlockType[BlockTypeId.Base2].frameSequence);
             this.sprite.moveToFrame(0);
             this.gameUI.baseDestoryed = true;
-            this.gameUI.bomb.boom(5 * 32, 11 * 32);
+            this.gameUI.baseBomb.boom(5 * 32 + 16, 11 * 32 + 16);
+            return;
+        }
+
+        if (this.typeId == BlockTypeId.Base2) {
             return;
         }
 
