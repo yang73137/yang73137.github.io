@@ -22,25 +22,25 @@ GameUI = ClassFactory.createClass(UIBase, {
 
         // 新建坦克索引
         this.birthIndex = 0;
-
+        
         // 最大坦克数
         this.maxTank = 4;
-
+        
         // 基地被摧毁
         this.baseDestoryed = false;
-
+        
         // 基地闪烁
         this.baseFlash = true;
 
         // 基地炸弹
         this.baseBomb = new Bomb(true);
-
+        
         // 奖励
         this.bonus = new Bonus();
 
         // 得分
         this.score = 0;
-
+        
         // 计数器
         this.enemyBirthCounter = null;
         this.endCounter = new Counter(120, false, true);
@@ -48,7 +48,7 @@ GameUI = ClassFactory.createClass(UIBase, {
         this.baseBombCounter = new Counter(30, false, false);
         this.baseProofCounter = new Counter(Const.TIME_WALL_IRON, false, true);
         this.stopCounter = new Counter(Const.TIME_STOP_BONUS, false, true);
-
+        
         // 设置GameUI
         this.setSize(Const.SCREEN_WIDTH, Const.SCREEN_HEIGHT);
         this.setBackground("#7F7F7F");
@@ -68,7 +68,7 @@ GameUI = ClassFactory.createClass(UIBase, {
         this.pauseLabel.moveTo(196, 220);
         this.pauseLabel.hide();
         this.append(this.pauseLabel);
-
+        
         // 状态区域
         this.statusArea = new Layer();
         this.statusArea.setSize(64, 448);
@@ -112,7 +112,7 @@ GameUI = ClassFactory.createClass(UIBase, {
         this.lifeLabel.setPosition(35, 263);
         this.lifeLabel.show();
         this.statusArea.append(this.lifeLabel);
-
+        
         // 关数
         this.flagLayer = new Layer();
         this.flagLayer.setSize(32, 32);
@@ -147,7 +147,7 @@ GameUI = ClassFactory.createClass(UIBase, {
         this.birthIndex = 0;
         this.gameOverLabel.hide();
         this.player.bulletProofSprite.hide();
-
+        
         this.enemyBirthCounter = new Counter(120, true, true);
         this.stopCounter.setEnabled(false);
         this.baseProofCounter.setEnabled(false);

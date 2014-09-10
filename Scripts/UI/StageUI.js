@@ -5,7 +5,7 @@
         this.stage = 1;
         this.stageChangedEnabled = true;
         this.counter = new Counter(120, false, true);
-
+        
         this.setSize(Const.SCREEN_WIDTH, Const.SCREEN_HEIGHT);
         this.setPosition(0, 0);
         this.setZ(Const.Z_UI);
@@ -46,7 +46,7 @@
 
         return true;
     },
-    setStageChangedEnabled: function (enabled) {
+    setStageChangedEnabled: function(enabled) {
         this.stageChangedEnabled = enabled;
     },
     setStage: function (stage) {
