@@ -22,25 +22,25 @@ GameUI = ClassFactory.createClass(UIBase, {
 
         // 新建坦克索引
         this.birthIndex = 0;
-        
+
         // 最大坦克数
         this.maxTank = 4;
-        
+
         // 基地被摧毁
         this.baseDestoryed = false;
-        
+
         // 基地闪烁
         this.baseFlash = true;
 
         // 基地炸弹
         this.baseBomb = new Bomb(true);
-        
+
         // 奖励
         this.bonus = new Bonus();
 
         // 得分
         this.score = 0;
-        
+
         // 计数器
         this.enemyBirthCounter = null;
         this.endCounter = new Counter(120, false, true);
@@ -48,7 +48,7 @@ GameUI = ClassFactory.createClass(UIBase, {
         this.baseBombCounter = new Counter(30, false, false);
         this.baseProofCounter = new Counter(Const.TIME_WALL_IRON, false, true);
         this.stopCounter = new Counter(Const.TIME_STOP_BONUS, false, true);
-        
+
         // 设置GameUI
         this.setSize(Const.SCREEN_WIDTH, Const.SCREEN_HEIGHT);
         this.setBackground("#7F7F7F");
@@ -68,7 +68,7 @@ GameUI = ClassFactory.createClass(UIBase, {
         this.pauseLabel.moveTo(196, 220);
         this.pauseLabel.hide();
         this.append(this.pauseLabel);
-        
+
         // 状态区域
         this.statusArea = new Layer();
         this.statusArea.setSize(64, 448);
@@ -94,7 +94,7 @@ GameUI = ClassFactory.createClass(UIBase, {
         // 玩家生命
         this.playerLabel = this.lifeLabel = new Label("IP");
         this.playerLabel.setColor("#000");
-        this.playerLabel.setCSS({ font: "22px 'Arial Black'" });
+        this.playerLabel.setCSS({ "font-size": "22px" });
         this.playerLabel.setPosition(15, 240);
         this.playerLabel.show();
         this.statusArea.append(this.playerLabel);
@@ -108,11 +108,11 @@ GameUI = ClassFactory.createClass(UIBase, {
 
         this.lifeLabel = new Label("");
         this.lifeLabel.setColor("#000");
-        this.lifeLabel.setCSS({ font: "19px 'Arial Black'" });
+        this.lifeLabel.setCSS({ "font-size": "19px" });
         this.lifeLabel.setPosition(35, 263);
         this.lifeLabel.show();
         this.statusArea.append(this.lifeLabel);
-        
+
         // 关数
         this.flagLayer = new Layer();
         this.flagLayer.setSize(32, 32);
@@ -123,7 +123,7 @@ GameUI = ClassFactory.createClass(UIBase, {
 
         this.stageLabel = new Label();
         this.stageLabel.setColor("#000");
-        this.stageLabel.setCSS({ font: "19px 'Arial Black'" });
+        this.stageLabel.setCSS({ "font-size": "19px" });
         this.stageLabel.setPosition(25, 375);
         this.stageLabel.show();
         this.statusArea.append(this.stageLabel);
@@ -147,7 +147,7 @@ GameUI = ClassFactory.createClass(UIBase, {
         this.birthIndex = 0;
         this.gameOverLabel.hide();
         this.player.bulletProofSprite.hide();
-        
+
         this.enemyBirthCounter = new Counter(120, true, true);
         this.stopCounter.setEnabled(false);
         this.baseProofCounter.setEnabled(false);
