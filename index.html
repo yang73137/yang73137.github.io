@@ -18,8 +18,8 @@
         }
 
         .button {
-            width: 32px;
-            height: 32px;
+            width: 64px;
+            height: 64px;
             border: none;
             background: #000000;
             color: #ffffff;
@@ -72,7 +72,8 @@
         up.get("press").set({ time: 0 });
         up.on("press", function () { Input.keyPress(InputAction.UP); });
         up.on("pressup", function () {
-            console.log(1);Input.keyRelease(InputAction.UP); });
+            console.log(1); Input.keyRelease(InputAction.UP);
+        });
 
         var right = new Hammer(document.getElementById("right"));
         right.get("press").set({ time: 0 });
