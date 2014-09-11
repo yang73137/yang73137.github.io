@@ -44,35 +44,71 @@
     <div id="app" class="app"></div>
     <div style="width: 512px; margin-top: 50px;">
         <div style="float: left">
-            <input class="button" style="margin-left: 50px;" type="button" value="上" ontouchstart="touchStart(InputAction.UP);" ontouchend="touchEnd(InputAction.UP);" />
+            <input id="up" class="button" style="margin-left: 50px;" type="button" value="上" />
             <br />
             <br />
-            <input class="button" type="button" value="左" ontouchstart="touchStart(InputAction.LEFT);" ontouchend="touchEnd(InputAction.LEFT);" />
-            <input style="margin-left: 55px;" class="button" type="button" value="右" ontouchstart="touchStart(InputAction.RIGHT);" ontouchend="keyRelease(InputAction.RIGHT);" />
+            <input id="left" class="button" type="button" value="左" />
+            <input id="right" style="margin-left: 55px;" class="button" type="button" value="右" />
             <br />
             <br />
-            <input class="button" style="margin-left: 50px;" type="button" value="下" ontouchstart="touchStart(InputAction.DOWN);" ontouchend="keyRelease(InputAction.DOWN);" />
+            <input id="down" class="button" style="margin-left: 50px;" type="button" value="下" />
         </div>
         <div style="float: left; padding-top: 50px;">
-            <input class="button" style="width: 50px; margin-left: 30px;" type="button" value="开始" ontouchstart="touchStart(InputAction.START);" ontouchend="keyRelease(InputAction.START);" />
-            <input class="button" style="width: 50px; margin-left: 30px;" type="button" value="选择" ontouchstart="touchStart(InputAction.SELECT);" ontouchend="keyRelease(InputAction.SELECT);" />
+            <input id="start" class="button" style="width: 50px; margin-left: 30px;" type="button" value="开始" />
+            <input id="select" class="button" style="width: 50px; margin-left: 30px;" type="button" value="选择" />
         </div>
         <div style="float: left; padding-top: 50px;">
-            <input class="button" style="margin-left: 30px;" type="button" value="A" ontouchstart="touchStart(InputAction.GAME_A);" ontouchend="keyRelease(InputAction.GAME_A);" />
-            <input class="button" style="margin-left: 30px;" type="button" value="B" ontouchstart="touchStart(InputAction.GAME_B);" ontouchend="keyRelease(InputAction.GAME_B);" />
+            <input id="a" class="button" style="margin-left: 30px;" type="button" value="A" />
+            <input id="b" class="button" style="margin-left: 30px;" type="button" value="B" />
         </div>
     </div>
+
+    <script src="./Scripts/Hammer/hammer.min.js"></script>
 
     <script type="text/javascript">
         window.release = true;
 
-        function touchStart(key) {
-            Input.keyPress(key);
-        }
+        var up = new Hammer(document.getElementById("up"));
+        up.get("press").set({ time: 0 });
+        up.on("press", function () { Input.keyPress(InputAction.UP); });
+        up.on("pressup", function () {
+            console.log(1);Input.keyRelease(InputAction.UP); });
 
-        function touchEnd(key) {
-            Input.keyRelease(key);
-        }
+        var right = new Hammer(document.getElementById("right"));
+        right.get("press").set({ time: 0 });
+        right.on("press", function () { Input.keyPress(InputAction.RIGHT); });
+        right.on("pressup", function () { Input.keyRelease(InputAction.RIGHT); });
+
+        var left = new Hammer(document.getElementById("left"));
+        left.get("press").set({ time: 0 });
+        left.on("press", function () { Input.keyPress(InputAction.LEFT); });
+        left.on("pressup", function () { Input.keyRelease(InputAction.LEFT); });
+
+        var down = new Hammer(document.getElementById("down"));
+        down.get("press").set({ time: 0 });
+        down.on("press", function () { Input.keyPress(InputAction.DOWN); });
+        down.on("pressup", function () { Input.keyRelease(InputAction.DOWN); });
+
+        var start = new Hammer(document.getElementById("start"));
+        start.get("press").set({ time: 0 });
+        start.on("press", function () { Input.keyPress(InputAction.START); });
+        start.on("pressup", function () { Input.keyRelease(InputAction.START); });
+
+        var select = new Hammer(document.getElementById("select"));
+        select.get("press").set({ time: 0 });
+        select.on("press", function () { Input.keyPress(InputAction.SELECT); });
+        select.on("pressup", function () { Input.keyRelease(InputAction.SELECT); });
+
+        var a = new Hammer(document.getElementById("a"));
+        a.get("press").set({ time: 0 });
+        a.on("press", function () { Input.keyPress(InputAction.GAME_A); });
+        a.on("pressup", function () { Input.keyRelease(InputAction.GAME_A); });
+
+        var b = new Hammer(document.getElementById("b"));
+        b.get("press").set({ time: 0 });
+        b.on("press", function () { Input.keyPress(InputAction.GAME_B); });
+        b.on("pressup", function () { Input.keyRelease(InputAction.GAME_B); });
+
     </script>
 
     <script src="./Scripts/Basic/Const.js"></script>
