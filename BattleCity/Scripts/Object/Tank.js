@@ -53,7 +53,7 @@ Tank = ClassFactory.createClass(GameObject, {
         // 开火计时器
         this.fireCounter = new Counter(30, false, true);
         this.fireCounter.setEnabled(false);
-
+        
         // 得分计数器
         this.scoreCounter = new Counter(30, false, true);
 
@@ -102,10 +102,10 @@ Tank = ClassFactory.createClass(GameObject, {
     },
     move: function () {
         this.onIce = false;
-
+        
         var oldX = this.sprite.x;
         var oldY = this.sprite.y;
-
+        
         if (this.direction == Const.DIRECTION_UP) {
             this.sprite.setY(Math.max(this.sprite.y - this.speed, 0));
         }
@@ -129,8 +129,8 @@ Tank = ClassFactory.createClass(GameObject, {
         }
 
         this.wheel = +!this.wheel;
-
-
+        
+        
         //检测和其他坦克碰撞
         for (var j = 0; j < this.gameUI.tanks.length; j++) {
             var tank = this.gameUI.tanks[j];
@@ -148,7 +148,7 @@ Tank = ClassFactory.createClass(GameObject, {
                 } else if (this.direction == Const.DIRECTION_LEFT && this.sprite.x - tank.sprite.x >= (this.sprite.width - this.speed)) {
                     this.sprite.setX(tank.sprite.x + tank.sprite.width);
                 }
-
+                
                 break;
             }
         }
@@ -209,7 +209,7 @@ Tank = ClassFactory.createClass(GameObject, {
         var block1 = (x1 >= 0 && y1 >= 0 && x1 < 26 && y1 < 26) ? this.gameUI.block16x16[x1][y1] : null;
         var block2 = (x2 >= 0 && y2 >= 0 && x2 < 26 && y2 < 26) ? this.gameUI.block16x16[x2][y2] : null;
         var block3 = (x3 >= 0 && y3 >= 0 && x3 < 26 && y3 < 26) ? this.gameUI.block16x16[x3][y3] : null;
-
+        
         if (block1 && block1.typeId == BlockTypeId.Ice || block2 && block2.typeId == BlockTypeId.Ice || block3 && block3.typeId == BlockTypeId.Ice) {
             this.onIce = true;
         }
@@ -271,7 +271,7 @@ Tank = ClassFactory.createClass(GameObject, {
                 this.sprite.restoreFrameSequence();
                 this.sprite.setVisible(true);
                 this.state = TankState.LIVE;
-
+                
                 this.onBirth();
                 break;
             case TankState.LIVE:
@@ -322,12 +322,12 @@ PlayerTank = ClassFactory.createClass(Tank, {
         Tank.init.call(this, team);
         // 生命数
         this.life = 0;
-
+        
         // 防弹效果
         this.bulletProofSprite = new Sprite(Const.IMAGE_MISC, 32, 32, [11, 12]);
         this.bulletProofSprite.setRepeat(0);
         this.bulletProofTime = 0;
-
+        
         this.scoreCounter.setEnabled(false);
     },
     setType: function (type) {
@@ -410,7 +410,7 @@ PlayerTank = ClassFactory.createClass(Tank, {
                 this.moving = false;
             }
         }
-
+        
         if (Input.isPressed(InputAction.UP)) {
             this.direction = Const.DIRECTION_UP;
             this.moving = true;
@@ -509,7 +509,7 @@ EnemyTank = ClassFactory.createClass(Tank, {
         if (this.hasBonus && !this.flashRedCounter.countdown()) {
             this.flashRed = !this.flashRed;
         }
-
+        
         if (this.type == 3) {
             switch (this.health) {
                 case 1:
@@ -536,12 +536,12 @@ EnemyTank = ClassFactory.createClass(Tank, {
             return;
         }
         else {
-            this.birthCounter.setEnabled(false);
+            this.birthCounter.setEnabled(false); 
         }
-
+        
         // 停止活动一段时间
         var stopCounter = this.gameUI.stopCounter;
-
+        
         if (stopCounter.enabled) {
             if (stopCounter.currentCount <= 120 && stopCounter.currentCount % 8 == 0) {
                 this.sprite.style.display = this.sprite.style.display == "block" ? "none" : "block";
