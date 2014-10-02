@@ -71,6 +71,13 @@ MarioBors = ClassFactory.createClass(GameObject, {
         this.setPosition(x, y);
 
         this.state = MarioState.Live;
+
+        this.deadCounter = new Counter(24, false, false);
+
+        this.fireable = false;
+        this.fireBalls = [new FireBall(), new FireBall()];
+
+        this.hurtable = true;
     },
     update: function () {
         switch (this.state) {
@@ -90,6 +97,9 @@ MarioBors = ClassFactory.createClass(GameObject, {
         this.y = y;
     },
     setType: function (type) {
+
+        this.fireable = false;
+
         if (type == MarioType.Small) {
             this.setSize(32, 32);
             this.sprite.setSize(32, 32);
@@ -105,6 +115,7 @@ MarioBors = ClassFactory.createClass(GameObject, {
             }
         }
         else if (type == MarioType.Flower) {
+            this.fireable = true;
             this.setSize(32, 64);
             this.sprite.setSize(32, 64);
             if (this.type == MarioType.Small) {
@@ -254,8 +265,6 @@ MarioBors = ClassFactory.createClass(GameObject, {
                 if (this.collidesRightWith(block)) {
                     block.onCollides(this);
                     block.onCollidesLeft(this);
-                    this.x -= 1;
-                    this.sprite.x -= 1;
                     break;
                 }
             }
@@ -274,9 +283,9 @@ MarioBors = ClassFactory.createClass(GameObject, {
                     gameUI.setX(-(6784 - 512));
                 } else {
                     gameUI.setX(gameUI.x - 1);
-                    this.x = -gameUI.x + 220;
                 }
             }
+
             if (this.x + gameUI.x + this.sprite.width > 512) {
                 this.x = -gameUI.x + 512 - this.sprite.width;
                 break;
@@ -285,6 +294,9 @@ MarioBors = ClassFactory.createClass(GameObject, {
     },
     addToGameUI: function (gameUI) {
         gameUI.append(this.sprite);
+        for (var fireBallIndex = 0; fireBallIndex < this.fireBalls.length; fireBallIndex++) {
+            this.fireBalls[fireBallIndex].addToGameUI(gameUI);
+        }
         this.gameUI = gameUI;
     },
     onLive: function() {
@@ -293,7 +305,7 @@ MarioBors = ClassFactory.createClass(GameObject, {
         this.sprite.hide();
         var spriteType = MarioSprite.Stand;
 
-        if (Input.isPressed(InputAction.GAME_D)) {
+        if (Input.isPressed(InputAction.GAME_B)) {
             if (!this.falling && this.jumpPressedTime == 0) {
                 this.maxJumpHeight = 150;
                 this.currentJumpHeight = 0;
@@ -308,7 +320,7 @@ MarioBors = ClassFactory.createClass(GameObject, {
 
         if (this.jumping) {
             spriteType = MarioSprite.Jump;
-            if (Input.isPressed(InputAction.GAME_D)) {
+            if (Input.isPressed(InputAction.GAME_B)) {
                 this.jumpPressedTime++;
             }
             else {
@@ -352,8 +364,12 @@ MarioBors = ClassFactory.createClass(GameObject, {
                         block.onCollides(this);
                         block.onCollidesDown(this);
                         this.y = block.y + block.height;
-                        this.jumping = false; 
+                        this.jumping = false;
+                        break;
                     }
+                }
+                if (!this.jumping) {
+                    break;
                 }
             }
         }
@@ -406,18 +422,35 @@ MarioBors = ClassFactory.createClass(GameObject, {
             this.movingToLeft = false;
         }
 
-        if (Input.isPressed(InputAction.GAME_C) && this.moving && !this.squating) {
-            this.speedUpPressedTime++;
-            if (this.speedUpPressedTime == 15) {
-                this.speed = 3;
-                this.speedUpLevel = 1;
+        if (Input.isPressed(InputAction.GAME_A)) {
+            if (this.fireable && !this.squating) {
+                for (var fireBallIndex = 0; fireBallIndex < this.fireBalls.length; fireBallIndex++) {
+                    var fireBall = this.fireBalls[fireBallIndex];
+                    if (fireBall.state == FireBallState.None) {
+                        fireBall.fire(this.faceToRight ? (this.x + this.width) : (this.x - 8), this.y, this.faceToRight);
+                        break;
+                    }
+                }
+                this.fireable = false;
             }
-            else if (this.speedUpPressedTime > 25) {
-                this.speed = 4;
-                this.speedUpLevel = 2;
+            if (this.moving && !this.squating0) {
+                this.speedUpPressedTime++;
+                if (this.speedUpPressedTime == 15) {
+                    this.speed = 3;
+                    this.speedUpLevel = 1;
+                } else if (this.speedUpPressedTime > 25) {
+                    this.speed = 4;
+                    this.speedUpLevel = 2;
+                }
+                if (!this.staying) {
+                    this.moveCounter.setCount(this.speedUpLevel * 8);
+                }
             }
-            if (!this.staying) {
-                this.moveCounter.setCount(this.speedUpLevel * 8);
+        } else {
+            this.speed = 2;
+            this.speedUpLevel = 0;
+            if (this.type == MarioType.Flower) {
+                this.fireable = true;
             }
         }
 
@@ -428,7 +461,7 @@ MarioBors = ClassFactory.createClass(GameObject, {
                 this.stayToRight = this.faceToRight;
             }
         }
-
+        
         if (this.state == MarioState.ChangingSmall || this.state == MarioState.ChangingBig) {
             if (this.changeCounter.countdown()) {
                 if (this.changeCounter.currentCount % 4 == 0) {
@@ -445,6 +478,19 @@ MarioBors = ClassFactory.createClass(GameObject, {
             }
             spriteType = MarioSprite.Stand;
         }
+
+        if (this.state == MarioState.ChangingFlower) {
+            if (this.changeCounter.countdown()) {
+                if (this.changeCounter.currentCount % 4 == 0) {
+                    this.setType(this.type == MarioType.Flower ? MarioType.Big : MarioType.Flower);
+                }
+            } else {
+                this.setType(MarioType.Flower);
+                this.state = MarioState.Live;
+            }
+            spriteType = MarioSprite.Stand;
+        }
+
 
         if (Input.isPressed(InputAction.DOWN)) {
             if (this.speedUpLevel > 0) {
@@ -484,36 +530,81 @@ MarioBors = ClassFactory.createClass(GameObject, {
         this.sprite.setPosition(this.x, this.y);
         this.sprite.show();
 
-        if (!this.sprite.moveToNextFrame()) {
-        }
+        this.sprite.moveToNextFrame();
     },
-    onDead: function() {
-        if (this.y < Const.SCREEN_HEIGHT) {
+    onDead: function () {
+        if (this.deadCounter.countdown()) {
+            this.y -= 5;
+            this.sprite.setY(this.y);
+        }
+        else if (this.y < Const.SCREEN_HEIGHT) {
             this.y += 5;
             this.sprite.setY(this.y);
         } else {
             this.state = MarioState.None;
         }
     },
+    onChanging: function () {
+        if (this.state == MarioState.ChangingSmall || this.state == MarioState.ChangingBig) {
+            if (this.changeCounter.countdown()) {
+                if (this.changeCounter.currentCount % 4 == 0) {
+                    this.setType(this.type == MarioType.Small ? MarioType.Big : MarioType.Small);
+                }
+            } else {
+                if (this.state == MarioState.ChangingSmall) {
+                    this.setType(MarioType.Small);
+                }
+                else if (this.state == MarioState.ChangingBig) {
+                    this.setType(MarioType.Big);
+                }
+                this.state = MarioState.Live;
+                this.hurtable = true;
+            }
+        }
+        else if (this.state == MarioState.ChangingFlower) {
+            if (this.changeCounter.countdown()) {
+                if (this.changeCounter.currentCount % 4 == 0) {
+                    this.setType(this.type == MarioType.Flower ? MarioType.Big : MarioType.Flower);
+                }
+            } else {
+                this.setType(MarioType.Flower);
+                this.state = MarioState.Live;
+                this.hurtable = true;
+            }
+        }
+        
+        this.setSprite(spriteType);
+        this.sprite.moveToNextFrame();
+    },
     dead: function () {
         this.height = 32;
-        this.y -= 120;
 
         this.sprite.setSize(this.width, this.height);
-        this.sprite.setPosition(this.x, this.y);
 
         this.sprite.setFrameSequence([{ x: 32 * 6, y: 64 }]);
         this.sprite.moveToFrame(0);
 
         this.state = MarioState.Dead;
+        this.collideble = false;
     },
     hurt: function() {
-        if (this.state == MarioState.Live) {
+        if (this.hurtable && this.state == MarioState.Live) {
             if (this.type == MarioType.Small) {
                 this.dead();
             } else {
                 this.state = MarioState.ChangingSmall;
             }
+        }
+    },
+    changeType: function (marioType) {
+        if (marioType == MarioType.Small) {
+            this.state = MarioState.ChangingSmall;
+        }
+        else if (marioType == MarioType.Big) {
+            this.state = MarioState.ChangingBig;
+        }
+        else if (marioType == MarioType.Flower) {
+            this.state = MarioState.ChangingFlower;
         }
     }
 });

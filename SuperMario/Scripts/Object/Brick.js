@@ -23,7 +23,7 @@ Brick = ClassFactory.createClass(GameObject, {
         this.state = BrickState.Static;
 
         this.upCounter = new Counter(16, false, true);
-        this.breakCounter = new Counter(60, false, true);
+        this.breakCounter = new Counter(70, false, true);
 
         this.fragment1 = new Sprite();
         this.fragment1.setSize(16, 16);
@@ -50,11 +50,15 @@ Brick = ClassFactory.createClass(GameObject, {
         this.fragment4.setBackgroundPosition(32, 0);
     },
     onCollidesDown: function (gameObject) {
-        if (gameObject == mario) {
-            if (mario.type == MarioType.Small) {
+        if (gameObject instanceof MarioBors) {
+            if (gameObject.type == MarioType.Small) {
                 this.state = BrickState.Up;
             }
             else {
+                this.sprite.setBackground("");
+                this.y -= 1;
+                this.sprite.setY(this.y);
+                
                 this.fragment1.show();
                 this.fragment2.show();
                 this.fragment3.show();
@@ -75,6 +79,9 @@ Brick = ClassFactory.createClass(GameObject, {
     },
     update: function () {
         switch (this.state) {
+            case BrickState.None:
+                this.sprite.hide();
+                break;
             case BrickState.Up:
                 if (this.upCounter.countdown()) {
                     if (this.upCounter.currentCount >= 8) {
@@ -89,17 +96,14 @@ Brick = ClassFactory.createClass(GameObject, {
                 }
                 break;
             case BrickState.Break:
-                //this.sprite.hide();
-                this.sprite.setBackground("");
-                this.y -= 10;
-                this.sprite.setY(this.y);
+                this.sprite.hide();
 
                 if (this.breakCounter.countdown()) {
-                    if (this.breakCounter.currentCount >= 50) {
-                        this.fragment1.moveBy(-2, -6);
-                        this.fragment2.moveBy(2, -6);
-                        this.fragment3.moveBy(-3, -2);
-                        this.fragment4.moveBy(3, -2);
+                    if (this.breakCounter.currentCount >= 58) {
+                        this.fragment1.moveBy(-3, -8);
+                        this.fragment2.moveBy(3, -8);
+                        this.fragment3.moveBy(-3, 0);
+                        this.fragment4.moveBy(3, 0);
                     }
                     else {
                         this.fragment1.moveBy(-1, 7);
