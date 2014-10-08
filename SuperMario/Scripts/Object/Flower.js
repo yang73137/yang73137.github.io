@@ -9,21 +9,16 @@ Flower = ClassFactory.createClass(GameObject, {
     init: function (x, y) {
         GameObject.init.call(this);
 
-        this.setSize(32, 32);
-        this.setPosition(x, y);
-        
         this.sprite = new Sprite();
-        this.sprite.setSize(32, 32);
-        this.sprite.setPosition(x, y);
         this.sprite.setBackgroundImage("../Images/Items.png");
         this.sprite.setFrameSequence([{ x: 0, y: 32 * 2 }, { x: 32, y: 32 * 2 }, { x: 32 * 2, y: 32 * 2 }, { x: 32 * 3, y: 32 * 2 }]);
         this.sprite.setFrameCounter(1);
         this.sprite.setRepeat(0);
-        this.sprite.start();
         this.sprite.hide();
+
+        this.setSize(32, 32);
+        this.setPosition(x, y);
         
-        this.delayCounter = new Counter(16, false, true);
-        this.delayCounter.setEnabled(false);
         this.upCounter = new Counter(1, true, true);
 
         this.originalX = x;
@@ -32,9 +27,8 @@ Flower = ClassFactory.createClass(GameObject, {
         this.state = FlowerState.None;
     },
     addToGameUI: function (gameUI) {
-        this.gameUI = gameUI;
-        gameUI.append(this.sprite);
-        gameUI.animateObjects.push(this);
+        GameObject.prototype.addToGameUI.call(this, gameUI);
+        gameUI.addAnimateObject(this);
     },
     update: function () {
         switch (this.state) {
@@ -52,7 +46,7 @@ Flower = ClassFactory.createClass(GameObject, {
     },
     animate: function () {
         this.state = FlowerState.Birth;
-        this.delayCounter.setEnabled(true);
+        this.sprite.start();
     },
     onCollides: function (gameObject) {
         if (gameObject instanceof MarioBors) {
@@ -65,17 +59,9 @@ Flower = ClassFactory.createClass(GameObject, {
         }
     },
     onBirth: function () {
-        if (this.delayCounter.enabled) {
-            if (this.delayCounter.countdown()) {
-                return;
-            } else {
-                this.delayCounter.setEnabled(false);
-            }
-        }
         if (this.y > this.originalY - this.height) {
             if (!this.upCounter.countdown()) {
-                this.y--;
-                this.sprite.setY(this.y);
+                this.setY(this.y - 1);
                 this.sprite.moveToNextFrame();
             }
         } else {

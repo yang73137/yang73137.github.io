@@ -2,17 +2,28 @@
     init: function (x, y, width, height) {
         GameObject.init.call(this);
         
-        this.setPosition(x, y);
-        this.setSize(width, height);
+        this.stoppable = true;
 
         this.sprite = new Sprite();
-        this.sprite.setSize(width, height);
-        this.sprite.setPosition(x, y);
-        //this.sprite.setBackgroundImage("../Images/TileSet_01_01.png");
         this.sprite.show();
+        
+        this.setPosition(x, y);
+        this.setSize(width, height);
     },
     addToGameUI: function (gameUI) {
-        gameUI.append(this.sprite);
-        gameUI.staticObjects.push(this);
+        GameObject.prototype.addToGameUI.call(this, gameUI);
+        gameUI.addStaticObject(this);
+    },
+    attachCollidesUp: function (fun) {
+        this.onCollidesUp = fun;
+    },
+    attachCollidesDown: function (fun) {
+        this.onCollidesDown = fun;
+    },
+    attachCollidesLeft: function (fun) {
+        this.onCollidesLeft = fun;
+    },
+    attachCollidesRight: function (fun) {
+        this.onCollidesRight = fun;
     }
 });
