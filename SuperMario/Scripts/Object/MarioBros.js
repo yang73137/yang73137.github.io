@@ -50,6 +50,7 @@ MarioBors = ClassFactory.createClass(GameObject, {
         this.squating = false;
 
         this.sprite = new Sprite();
+        this.sprite.setZ(5);
         this.sprite.setBackgroundImage("../Images/MarioBros4.png");
         this.sprite.setFrameSequence([{ x: 0, y: 64 }]);
         this.sprite.setRepeat([0]);
@@ -240,7 +241,7 @@ MarioBors = ClassFactory.createClass(GameObject, {
     freefall: function () {
         this.falling = true;
         if (!this.jumpingUp) {
-            for (var i = 0; i < 6; i++) {
+            for (var i = 0; i < 7; i++) {
                 this.setY(this.y + 1);
                 for (var blockIndex = 0; blockIndex < this.gameUI.animateObjects.length; blockIndex++) {
                     var block = this.gameUI.animateObjects[blockIndex];
@@ -271,84 +272,19 @@ MarioBors = ClassFactory.createClass(GameObject, {
                 }
             }
         }
-        if (this.y > Const.SCREEN_HEIGHT) {
-            this.state = MarioState.Dead;
+        if (this.y - this.height * 2 > Const.SCREEN_HEIGHT) {
+            this.dead();
         }
     },
-    moveToLeft: function () {
-        for (var i = 0; i < this.speed; i++) {
-            this.setX(this.x - 1);
-            for (var blockIndex = 0; blockIndex < this.gameUI.animateObjects.length; blockIndex++) {
-                var block = this.gameUI.animateObjects[blockIndex];
-                if (this.collidesLeftWith(block) && block.rightCollidable) {
-                    block.onCollides(this);
-                    block.onCollidesRight(this);
-                    if (block.stoppable) {
-                        this.setX(this.x + 1);
-                        break;
-                    }
-                }
-            }
-            for (var blockIndex = 0; blockIndex < this.gameUI.staticObjects.length; blockIndex++) {
-                var block = this.gameUI.staticObjects[blockIndex];
-                if (this.collidesLeftWith(block) && block.rightCollidable) {
-                    block.onCollides(this);
-                    block.onCollidesRight(this);
-                    if (block.stoppable) {
-                        this.setX(this.x + 1);
-                        break;
-                    }
-                }
-            }
-            if (this.x < -this.gameUI.x) {
-                this.setX(-this.gameUI.x);
-                break;
-            }
+    moveLeft: function (speed) {
+        GameObject.prototype.moveLeft.call(this, speed);
+        if (this.x < -this.gameUI.x) {
+            this.setX(-this.gameUI.x);
         }
     },
-    moveToRight: function() {
-        for (var i = 0; i < this.speed; i++) {
-            this.setX(this.x + 1);
-            for (var blockIndex = 0; blockIndex < this.gameUI.animateObjects.length; blockIndex++) {
-                var block = this.gameUI.animateObjects[blockIndex];
-                if (this.collidesRightWith(block) && block.leftCollidable) {
-                    block.onCollides(this);
-                    block.onCollidesLeft(this);
-                    if (block.stoppable) {
-                        this.setX(this.x - 1);
-                        break;
-                    }
-                }
-            }
-            for (var blockIndex = 0; blockIndex < this.gameUI.staticObjects.length; blockIndex++) {
-                var block = this.gameUI.staticObjects[blockIndex];
-                if (this.collidesRightWith(block) && block.leftCollidable) {
-                    block.onCollides(this);
-                    block.onCollidesLeft(this);
-                    if (block.stoppable) {
-                        this.setX(this.x - 1);
-                        break;
-                    }
-                }
-            }
-            if (this.x > 6784) {
-
-            } else {
-                if (this.x + this.gameUI.x > 220) {
-                    if (-this.gameUI.x >= 6784 - 512) {
-                        this.gameUI.setX(-(6784 - 512));
-                    } else {
-                        this.gameUI.setX(this.gameUI.x - 1);
-                    }
-                }
-
-                if (this.x + this.gameUI.x + this.sprite.width > 512) {
-                    this.x = -this.gameUI.x + 512 - this.sprite.width;
-                    break;
-                }
-            }
-
-        }
+    moveRight: function(speed) {
+        GameObject.prototype.moveRight.call(this, speed);
+        this.gameUI.scroll();
     },
     addToGameUI: function (gameUI) {
         GameObject.prototype.addToGameUI.call(this, gameUI);
@@ -356,6 +292,7 @@ MarioBors = ClassFactory.createClass(GameObject, {
             this.fireBalls[fireBallIndex].addToGameUI(gameUI);
         }
         gameUI.mario = this;
+        gameUI.addAnimateObject(this);
     },
     onLive: function () {
 
@@ -378,7 +315,7 @@ MarioBors = ClassFactory.createClass(GameObject, {
 
         // 初始化状态
         this.freefall();
-        this.sprite.hide();
+
         var spriteType = MarioSprite.Stand;
 
         if (Input.isPressed(InputAction.GAME_B)) {
@@ -476,7 +413,7 @@ MarioBors = ClassFactory.createClass(GameObject, {
 
                 if (!this.squating && !this.staying) {
                     this.movingToRight = true;
-                    this.moveToRight();
+                    this.moveRight(this.speed);
                 }
             }
         } else {
@@ -500,7 +437,7 @@ MarioBors = ClassFactory.createClass(GameObject, {
 
                 if (!this.squating && !this.staying) {
                     this.movingToLeft = true;
-                    this.moveToLeft();
+                    this.moveLeft(this.speed);
                 }
             }
         } else {
@@ -579,14 +516,13 @@ MarioBors = ClassFactory.createClass(GameObject, {
                     }
                 }
 
-                this.stayToRight ? this.moveToRight() : this.moveToLeft();
+                this.stayToRight ? this.moveRight(this.speed) : this.moveLeft(this.speed);
             }
         }
 
         if (this.state == MarioState.Live) {
             this.setSprite(spriteType);
             this.setPosition(this.x, this.y);
-            this.sprite.show();
 
             this.sprite.moveToNextFrame();
         }
@@ -611,7 +547,7 @@ MarioBors = ClassFactory.createClass(GameObject, {
             this.initChange = true;
             return;
         }
-        this.sprite.hide();
+
         if (this.state == MarioState.ChangingSmall || this.state == MarioState.ChangingBig) {
             if (!this.changeCounter.countdown()) {
                 if (this.state == MarioState.ChangingSmall) {
@@ -622,7 +558,6 @@ MarioBors = ClassFactory.createClass(GameObject, {
                 this.state = MarioState.Live;
                 this.hurtCounter.setEnabled(true);
             } else {
-                this.sprite.show();
                 if (!this.changeBigSmallCounter.countdown()) {
                     if (this.sprite.height == 32) {
                         this.setType(MarioType.Big);
@@ -633,7 +568,6 @@ MarioBors = ClassFactory.createClass(GameObject, {
                     }
                 }
             }
-
         }
         else if (this.state == MarioState.ChangingFlower) {
             if (!this.changeCounter.countdown()) {
@@ -641,10 +575,8 @@ MarioBors = ClassFactory.createClass(GameObject, {
                 this.state = MarioState.Live;
                 this.hurtCounter.setEnabled(true);
             } else {
-                this.sprite.show();
                 this.sprite.moveToNextFrame();
             }
-            
         }
         
     },
@@ -659,7 +591,7 @@ MarioBors = ClassFactory.createClass(GameObject, {
         this.state = MarioState.Dead;
         this.collidable = false;
     },
-    hurt: function() {
+    hurt: function () {
         if (this.hurtable && this.state == MarioState.Live) {
             if (this.type == MarioType.Small) {
                 this.dead();
@@ -736,43 +668,21 @@ MarioBors = ClassFactory.createClass(GameObject, {
         this.speed = 1;
     },
     onReJump: function () {
-        if (this.currentJumpHeight < 50) {
+        this.speed = 1;
+        if (this.currentJumpHeight < 45) {
             for (var i = 0; i < 6; i++) {
                 this.currentJumpHeight += 1;
-                this.setY(this.y - 1);
+                this.moveUp(1);
 
                 if (this.currentJumpHeight % 2 == 0) {
                     if (this.movingToRight) {
-                        this.moveToRight();
+                        this.moveRight(1);
                     }
                     else if (this.movingToLeft) {
-                        this.moveToLeft();
+                        this.moveLeft(1);
                     }
                 }
 
-                for (var blockIndex = 0; blockIndex < this.gameUI.animateObjects.length; blockIndex++) {
-                    var block = this.gameUI.animateObjects[blockIndex];
-                    if (this.collidesUpWith(block)) {
-                        block.onCollides(this);
-                        block.onCollidesDown(this);
-                        if (block.stoppable) {
-                            this.y = block.y + block.height;
-                            break;
-                        }
-                    }
-                }
-
-                for (var blockIndex = 0; blockIndex < this.gameUI.staticObjects.length; blockIndex++) {
-                    var block = this.gameUI.staticObjects[blockIndex];
-                    if (this.collidesUpWith(block)) {
-                        block.onCollides(this);
-                        block.onCollidesDown(this);
-                        if (block.stoppable) {
-                            this.y = block.y + block.height;
-                            break;
-                        }
-                    }
-                }
                 this.sprite.moveToFrame(0);
             }
             
@@ -780,11 +690,6 @@ MarioBors = ClassFactory.createClass(GameObject, {
             this.speed = 2;
             this.currentJumpHeight = 0;
             this.state = MarioState.Live;
-        }
-    },
-    onCollidesUpWith: function(gameObject) {
-        if (gameObject instanceof Enemy) {
-            this.hurt();
         }
     }
 });

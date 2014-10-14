@@ -5,12 +5,35 @@
     Break: 3
 };
 
+QuestionItemType = {
+    Gold: 1,
+    MultiGold: 2,
+    BigMushroom: 3,
+    LifeMushroom: 4,
+    Star: 5
+};
+
+QuestionIconType = {
+    None: 0,
+    RedHidden: 1,
+    BlueHidden: 2,
+    RedQuestion: 3,
+    BlueQuestion: 4,
+    RedBrick: 5,
+    BlueBrick: 6
+};
+
 Question = ClassFactory.createClass(GameObject, {
-    init: function (x, y, type) {
+    init: function (x, y, itemType, iconType) {
         GameObject.init.call(this);
         
+        if (itemType == undefined || iconType == undefined) {
+            console.log(x, y);
+        }
+
         this.stoppable = true;
-        this.type = type;
+        this.itemType = itemType;
+        this.iconType = iconType;
         this.collideCount = 1;
         this.item = null;
         this.upCounter = new Counter(16, false, true);
@@ -27,30 +50,29 @@ Question = ClassFactory.createClass(GameObject, {
         this.setPosition(x, y);
         this.setSize(32, 32);
 
-        if (this.type == 2 || type == 5) {
-            this.sprite.setFrameSequence([{ x: 32, y: 0 }]);
-        } else {
-            this.sprite.setFrameSequence([{ x: 32 * 24, y: 0 }, { x: 32 * 25, y: 0 }, { x: 32 * 26, y: 0 }]);
-        }
+        this.setIconType(iconType);
+        this.stoppedable = false;
     },
-    addToGameUI: function (gameUI) {
+    addToGameUI: function(gameUI) {
         GameObject.prototype.addToGameUI.call(this, gameUI);
         gameUI.addAnimateObject(this);
         gameUI.addStaticObject(this);
     },
     update: function () {
+
         switch (this.state) {
             case QuestionState.Normal:
-                this.sprite.moveToNextFrame();
+                if (this.iconType != QuestionIconType.None && this.iconType != QuestionIconType.RedHidden && this.iconType != QuestionIconType.BlueHidden) {
+                    this.sprite.moveToNextFrame();
+                }
                 break;
             case QuestionState.Up:
                 if (this.upCounter.countdown()) {
                     if (this.upCounter.currentCount >= 8) {
-                        this.setPosition(this.x, this.y - 2);
+                        this.moveUp(2);
                     } else {
-                        this.setPosition(this.x, this.y + 2);
+                        this.moveDown(2);
                     }
-                    
                 }
                 else {
                     this.state = this.collideCount > 0 ? QuestionState.Normal : QuestionState.None;
@@ -63,18 +85,28 @@ Question = ClassFactory.createClass(GameObject, {
         }
     },
     onCollidesDown: function (gameObject) {
+        
+        if (!(gameObject instanceof MarioBors)) {
+            return;
+        }
 
         if (this.item == null) {
             this.setItem();
         }
 
+        this.sprite.show();
         this.setCollidable(true, true, true, true);
 
         if (this.state == QuestionState.Normal) {
             this.collideCount--;
             if (this.collideCount == 0) {
                 this.sprite.setBackgroundImage("../Images/TileSet.png");
-                this.sprite.setFrameSequence([{ x: 32 * 27, y: 0 }]);
+                if (this.iconType == QuestionIconType.RedBrick || this.iconType == QuestionIconType.RedQuestion || this.iconType == QuestionIconType.RedHidden) {
+                    this.sprite.setFrameSequence([{ x: 32 * 27, y: 0 }]);
+                }
+                else if (this.iconType == QuestionIconType.BlueBrick || this.iconType == QuestionIconType.BlueQuestion || this.iconType == QuestionIconType.BlueHidden) {
+                    this.sprite.setFrameSequence([{ x: 32 * 27, y: 64 }]);
+                }
                 this.sprite.moveToFrame(0);
             }
             this.state = QuestionState.Up;
@@ -88,27 +120,51 @@ Question = ClassFactory.createClass(GameObject, {
     },
     setItem: function () {
         var mario = this.gameUI.mario;
-        if (this.type == 1) {
+        switch (this.itemType) {
+        case QuestionItemType.Gold:
             this.item = new Gold(this.x, this.y - 48);
-        }
-        else if (this.type == 2) {
+            break;
+        case QuestionItemType.MultiGold:
             this.item = new Gold(this.x, this.y - 48);
             this.collideCount = 5;
-        }
-        else if (this.type == 3) {
+            break;
+        case QuestionItemType.BigMushroom:
             if (mario.type == MarioType.Small) {
                 this.item = new Mushroom(this.x, this.y, MushroomType.Big);
             } else {
                 this.item = new Flower(this.x, this.y);
             }
-        }
-        else if (this.type == 4) {
+            break;
+        case QuestionItemType.LifeMushroom:
             this.item = new Mushroom(this.x, this.y, MushroomType.Bonus);
-        }
-        else if (this.type == 5) {
+            break;
+        case QuestionItemType.Star:
             this.item = new Star(this.x, this.y);
+            break;
         }
+
         this.item.sprite.hide();
-        this.item.addToGameUI(gameUI);
+        this.item.addToGameUI(this.gameUI);
+    },
+    setIconType: function (iconType) {
+        switch (iconType) {
+            case QuestionIconType.RedHidden:
+            case QuestionIconType.BlueHidden:
+                this.setCollidable(false, true, false, false);
+                this.sprite.hide();
+                break;
+            case QuestionIconType.RedQuestion:
+                this.sprite.setFrameSequence([{ x: 32 * 24, y: 0 }, { x: 32 * 25, y: 0 }, { x: 32 * 26, y: 0 }]);
+                break;
+            case QuestionIconType.BlueQuestion:
+                this.sprite.setFrameSequence([{ x: 32 * 24, y: 32 * 2 }, { x: 32 * 25, y: 32 * 2 }, { x: 32 * 26, y: 32 * 2 }]);
+                break;
+            case QuestionIconType.RedBrick:
+                this.sprite.setFrameSequence([{ x: 32, y: 0 }]);
+                break;
+            case QuestionIconType.BlueBrick:
+                this.sprite.setFrameSequence([{ x: 64, y: 64 }]);
+                break;
+        }
     }
 });

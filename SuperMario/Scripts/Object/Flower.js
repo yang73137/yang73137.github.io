@@ -25,6 +25,8 @@ Flower = ClassFactory.createClass(GameObject, {
         this.originalY = y;
 
         this.state = FlowerState.None;
+
+        this.setCollidable(true, false, false, false);
     },
     addToGameUI: function (gameUI) {
         GameObject.prototype.addToGameUI.call(this, gameUI);
@@ -51,7 +53,7 @@ Flower = ClassFactory.createClass(GameObject, {
     onCollides: function (gameObject) {
         if (gameObject instanceof MarioBors) {
             this.state = FlowerState.None;
-            this.collidable = false;
+            this.setCollidable(false, false, false, false);
             if (gameObject.type == MarioType.Small) {
                 gameObject.changeType(MarioType.Big);
             } else if (gameObject.type == MarioType.Big) {
@@ -62,8 +64,9 @@ Flower = ClassFactory.createClass(GameObject, {
     onBirth: function () {
         if (this.y > this.originalY - this.height) {
             if (!this.upCounter.countdown()) {
-                this.setY(this.y - 1);
+                this.moveUp(1);
                 this.sprite.moveToNextFrame();
+                this.setCollidable(true, true, true, true);
             }
         } else {
             this.state = FlowerState.Live;

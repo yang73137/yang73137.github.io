@@ -1,13 +1,19 @@
-﻿BrickState = {
+﻿
+BrickState = {
     None: 0,
     Normal: 1,
     Up: 2,
     Break: 3
 };
 
+BrickType = {
+    Red: 1,
+    Blue: 2
+};
+
 
 Brick = ClassFactory.createClass(GameObject, {
-    init: function (x, y) {
+    init: function (x, y, type) {
         GameObject.init.call(this);
 
         this.stoppable = true;
@@ -28,25 +34,25 @@ Brick = ClassFactory.createClass(GameObject, {
         this.fragment1.setSize(16, 16);
         this.fragment1.setPosition(this.x, this.y, 200);
         this.fragment1.setBackgroundImage("../Images/TileSet.png");
-        this.fragment1.setBackgroundPosition(32, 0);
         
         this.fragment2 = new Sprite();
         this.fragment2.setSize(16, 16);
         this.fragment2.setPosition(this.x + 16, this.y, 200);
         this.fragment2.setBackgroundImage("../Images/TileSet.png");
-        this.fragment2.setBackgroundPosition(32, 0);
         
         this.fragment3 = new Sprite();
         this.fragment3.setSize(16, 16);
         this.fragment3.setPosition(this.x, this.y + 16, 200);
         this.fragment3.setBackgroundImage("../Images/TileSet.png");
-        this.fragment3.setBackgroundPosition(32, 0);
         
         this.fragment4 = new Sprite();
         this.fragment4.setSize(16, 16);
         this.fragment4.setPosition(this.x + 16, this.y + 16, 200);
         this.fragment4.setBackgroundImage("../Images/TileSet.png");
-        this.fragment4.setBackgroundPosition(32, 0);
+
+        this.setType(type);
+
+        this.stoppedable = false;
     },
     onCollidesDown: function (gameObject) {
         if (gameObject instanceof MarioBors) {
@@ -55,8 +61,7 @@ Brick = ClassFactory.createClass(GameObject, {
             }
             else {
                 this.sprite.setBackground("");
-                this.setY(this.y - 1);
-                
+                this.moveUp(1);
                 this.fragment1.show();
                 this.fragment2.show();
                 this.fragment3.show();
@@ -92,11 +97,10 @@ Brick = ClassFactory.createClass(GameObject, {
     onUp: function() {
         if (this.upCounter.countdown()) {
             if (this.upCounter.currentCount >= 8) {
-                this.setPosition(this.x, this.y - 2);
+                this.moveUp(2);
             } else {
-                this.setPosition(this.x, this.y + 2);
+                this.moveDown(2);
             }
-            this.sprite.setPosition(this.x, this.y);
         } else {
             this.state = BrickState.Normal;
         }
@@ -106,18 +110,43 @@ Brick = ClassFactory.createClass(GameObject, {
         this.setCollidable(false, false, false, false);
         if (this.breakCounter.countdown()) {
             if (this.breakCounter.currentCount >= 58) {
-                this.fragment1.moveBy(-3, -8);
-                this.fragment2.moveBy(3, -8);
-                this.fragment3.moveBy(-4, 0);
-                this.fragment4.moveBy(4, 0);
-            } else {
-                this.fragment1.moveBy(0, 7);
-                this.fragment2.moveBy(0, 7);
-                this.fragment3.moveBy(0, 7);
-                this.fragment4.moveBy(0, 7);
+                this.fragment1.moveBy(-5, -8);
+                this.fragment2.moveBy(5, -8);
+                this.fragment3.moveBy(-6, 2);
+                this.fragment4.moveBy(6, 2);
+            }
+            else if (this.breakCounter.currentCount <= 30) {
+                this.fragment1.moveBy(0, 9);
+                this.fragment2.moveBy(0, 9);
+                this.fragment3.moveBy(0, 9);
+                this.fragment4.moveBy(0, 9);
+            }
+            else {
+                this.fragment1.moveBy(0, 8);
+                this.fragment2.moveBy(0, 8);
+                this.fragment3.moveBy(0, 8);
+                this.fragment4.moveBy(0, 8);
             }
         } else {
             this.state = BrickState.None;
+        }
+    },
+    setType: function (type) {
+        switch (type) {
+        case 1:
+            this.sprite.setBackgroundPosition(32, 0);
+            this.fragment1.setBackgroundPosition(32, 0);
+            this.fragment2.setBackgroundPosition(48, 0);
+            this.fragment3.setBackgroundPosition(32, 16);
+            this.fragment4.setBackgroundPosition(48, 16);
+            break;
+        case 2:
+            this.sprite.setBackgroundPosition(64, 64);
+            this.fragment1.setBackgroundPosition(64, 64);
+            this.fragment2.setBackgroundPosition(80, 64);
+            this.fragment3.setBackgroundPosition(64, 80);
+            this.fragment4.setBackgroundPosition(80, 80);
+            break;
         }
     }
 });

@@ -16,6 +16,8 @@
 
         this.originalX = x;
         this.originalY = y;
+
+        this.setCollidable(false, false, false, false);
     },
     addToGameUI: function (gameUI) {
         GameObject.prototype.addToGameUI.call(this, gameUI);
@@ -28,9 +30,9 @@
         
         if (this.upCounter.countdown()) {
             if (this.upCounter.currentCount >= 16) {
-                this.sprite.moveBy(0, -2);
+                this.moveUp(3);
             } else {
-                this.sprite.moveBy(0, 2);
+                this.moveDown(2);
             }
             this.sprite.moveToNextFrame();
         } else {
@@ -51,8 +53,9 @@ GoldState = {
     Live: 1
 };
 
+
 Gold2 = ClassFactory.createClass(GameObject, {
-    init: function (x, y) {
+    init: function (x, y, goldType) {
         GameObject.init.call(this);
 
         this.sprite = new Sprite();
@@ -67,10 +70,11 @@ Gold2 = ClassFactory.createClass(GameObject, {
         this.setSize(32, 32);
 
         this.state = GoldState.Live;
+        this.setCollidable(true, true, true, true);
     },
     addToGameUI: function (gameUI) {
         GameObject.prototype.addToGameUI.call(this, gameUI);
-        gameUI.animateObjects.push(this);
+        gameUI.addAnimateObject(this);
     },
     update: function () {
         switch (this.state) {
@@ -81,12 +85,20 @@ Gold2 = ClassFactory.createClass(GameObject, {
                 this.sprite.moveToNextFrame();
                 break;
         }
-        
     },
     onCollides: function (gameObject) {
-        if (gameObject instanceof MarioBors) {
+        if (gameObject instanceof MarioBors ) {
             this.sprite.hide();
             this.state = GoldState.None;
+            this.setCollidable(false, false, false, false);
+        }
+        else if (gameObject instanceof Brick || gameObject instanceof Question) {
+            this.sprite.hide();
+            this.state = GoldState.None;
+            this.setCollidable(false, false, false, false);
+            var innerGold = new Gold(this.x, this.y);
+            innerGold.addToGameUI(this.gameUI);
+            innerGold.animate();
         }
     }
 });
