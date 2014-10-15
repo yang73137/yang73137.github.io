@@ -16,7 +16,7 @@ App = {
         this.gameUI = gameUI;
     },
     process: function (src, loaded, total) {
-        document.getElementById("app").innerHTML = "已经加载: " + src + "   " + loaded + "/" + total;
+        document.getElementById("app").innerHTML = "已经加载: " + loaded + "/" + total;
     },
     complete: function () {
         document.getElementById("app").innerHTML = "";
