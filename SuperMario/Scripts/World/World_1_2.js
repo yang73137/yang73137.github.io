@@ -253,6 +253,7 @@ World_1_2 = ClassFactory.createClass(World, {
                 if (!this.tip) {
                     this.tip = true;
                     alert("想跳关，请充值1元到作者支付宝账户");
+                    this.gameUI.changeToScene5();
                 }
             }
         });
@@ -265,6 +266,7 @@ World_1_2 = ClassFactory.createClass(World, {
                 if (!this.tip) {
                     this.tip = true;
                     alert("想跳关，请充值1元到作者支付宝账户");
+                    this.gameUI.changeToScene5();
                 }
             }
         });
@@ -277,6 +279,7 @@ World_1_2 = ClassFactory.createClass(World, {
                 if (!this.tip) {
                     this.tip = true;
                     alert("想跳关，请充值1元到作者支付宝账户");
+                    this.gameUI.changeToScene5();
                 }
             }
         });
@@ -314,16 +317,16 @@ World_1_2 = ClassFactory.createClass(World, {
         var goomba_1452_368 = new Goomba(1452, 368, GameObjectIconType.Underground);
         goomba_1452_368.addToGameUI(gameUI);
 
-        var koopaTroopa_1964_368 = new KoopaTroopa(1964, 336, KoopaTroopaType.Green, GameObjectIconType.Underground);
+        var koopaTroopa_1964_368 = new KoopaTroopa(1964, 336, KoopaTroopaType.Normal, GameObjectIconType.Underground);
         koopaTroopa_1964_368.addToGameUI(gameUI);
 
-        var koopaTroopa_2028_368 = new KoopaTroopa(2028, 336, KoopaTroopaType.Green, GameObjectIconType.Underground);
+        var koopaTroopa_2028_368 = new KoopaTroopa(2028, 336, KoopaTroopaType.Normal, GameObjectIconType.Underground);
         koopaTroopa_2028_368.addToGameUI(gameUI);
 
-        var koopaTroopa_2382_368 = new KoopaTroopa(2382, 336, KoopaTroopaType.Green, GameObjectIconType.Underground);
+        var koopaTroopa_2382_368 = new KoopaTroopa(2382, 336, KoopaTroopaType.Normal, GameObjectIconType.Underground);
         koopaTroopa_2382_368.addToGameUI(gameUI);
 
-        var koopaTroopa_5300_368 = new KoopaTroopa(5300, 336, KoopaTroopaType.Red, GameObjectIconType.Underground);
+        var koopaTroopa_5300_368 = new KoopaTroopa(5300, 336, KoopaTroopaType.Clever, GameObjectIconType.Underground);
         koopaTroopa_5300_368.addToGameUI(gameUI);
 
         var goomba_2510_368 = new Goomba(2510, 368, GameObjectIconType.Underground);
@@ -578,8 +581,10 @@ World_1_2 = ClassFactory.createClass(World, {
                     this.mario.moveRight(2);
                     this.mario.sprite.moveToNextFrame();
                 } else {
-                    alert("后续关卡正在制作中......");
+                    var world_1_3 = new World_1_3();
+                    this.gameUI.setWorld(world_1_3);
                     this.state = World_1_2_State.None;
+                    this.mario.setCollidable(true, true, true, true);
                 }
                 break;
         }
@@ -611,7 +616,6 @@ World_1_2 = ClassFactory.createClass(World, {
         this.state = World_1_2_State.Scene5;
     },
     changeToScene6: function () {
-        this.scrollable = false;
         this.mario.setCollidable(false, true, false, false);
         this.state = World_1_2_State.Scene6;
     }
