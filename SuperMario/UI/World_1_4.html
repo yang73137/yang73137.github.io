@@ -19,7 +19,7 @@
         }
     </style>
 </head>
-<body style="background: #000000;">
+<body style="background: #ffffff;">
     <div id="app"></div>
 
     <script src="../Scripts/Basic/ClassFactory.js"></script>
@@ -39,6 +39,7 @@
     <script src="../Scripts/Object/GameObject.js"></script>
     <script src="../Scripts/Object/MarioBros.js"></script>
     <script src="../Scripts/Object/Enemy.js"></script>
+    <script src="../Scripts/Object/Bowser.js"></script>
     <script src="../Scripts/Object/Goomba.js"></script>
     <script src="../Scripts/Object/KoopaTroopa.js"></script>
     <script src="../Scripts/Object/Mushroom.js"></script>
@@ -64,13 +65,13 @@
         world.addToGameUI(gameUI);
 
         //world.changeToScene1();
-        setTimeout(function () {
-
-            //world.mario.setType(MarioType.Flower);
-            //world.mario.setPosition(3600, 212);
-            //world.setPosition(-4500, -2);
-        }, 100);
-
+        
+        //setTimeout(function () {
+        //    world.mario.setType(MarioType.Flower);
+        //    world.mario.setPosition(4200, 212);
+        //    world.setPosition(-4200, -2);
+        //}, 100);
+        
         setInterval(function () {
             gameUI.update();
         }, 16);
