@@ -282,28 +282,17 @@ World_1_3 = ClassFactory.createClass(World, {
     },
     restart: function () {
 
-        var oldX = this.x;
         this.div.innerHTML = "";
         this.staticObjects = [];
         this.animateObjects = [];
         this.build();
 
+        this.mario.setPosition(84, 208 - this.mario.height);
         this.mario.reborn();
 
-        if (Math.abs(oldX) >= 2062) {
-            this.setX(-2062);
-            this.mario.setPosition(2130, 400 - this.mario.height);
-        } else {
-            this.setX(-4);
-            this.mario.setPosition(84, 400 - this.mario.height);
-        }
+        this.setPosition(-3, -3);
 
         this.scrollable = true;
-    },
-    onGame: function() {
-        for (var i = 0; i < this.animateObjects.length; i++) {
-            this.animateObjects[i].update();
-        }
     },
     onEnd: function() {
         if (this.mario.moveDown(3)) {
