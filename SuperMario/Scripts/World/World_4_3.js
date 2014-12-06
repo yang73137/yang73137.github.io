@@ -11,9 +11,6 @@ World_4_3 = ClassFactory.createClass(World, {
         
         this.setTitle("World  4-3");
         this.scrollable = true;
-
-        ImageLoader.load(this, [Const.IMAGE_WORLD_5_1]);
-        ScriptLoader.load(this, [Const.SCRIPT_WORLD_5_1]);
     },
     scroll: function () {
         if (!this.scrollable) {
@@ -320,7 +317,6 @@ World_4_3 = ClassFactory.createClass(World, {
         flag.attachCollidesLeft(function (gameObject) {
             if (gameObject instanceof MarioBors) {
                 if (gameObject instanceof MarioBors) {
-                    this.setCollidable(false, false, false, false);
                     this.gameUI.end();
                 }
             }
@@ -370,8 +366,7 @@ World_4_3 = ClassFactory.createClass(World, {
             this.mario.sprite.moveToNextFrame();
         } else {
             this.state = WorldState.None;
-            var world = new World_5_1();
-            this.gameUI.setWorld(world);
+            alert("To be continued......");
         }
     }
 });
