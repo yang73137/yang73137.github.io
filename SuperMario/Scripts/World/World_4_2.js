@@ -170,14 +170,14 @@ World_4_2 = ClassFactory.createClass(World, {
         var tube_2819_304 = new Block(2819, 304, 64, 96);
         tube_2819_304.attachCollidesUp(function (gameObject) {
             if (gameObject instanceof MarioBors && Input.isPressed(InputAction.DOWN) && ((gameObject.x > this.x) && (gameObject.x + gameObject.width < this.x + this.width))) {
-                this.gameUI.scene = World_2_1_Scene.Scene2;
+                this.gameUI.scene = World_4_2_Scene.Scene3;
                 this.gameUI.changeScene();
             }
         });
         tube_2819_304.addToGameUI(gameUI);
 
-        var koopaTroopa_3000_352 = new KoopaTroopa(3000, 352, KoopaTroopaType.Normal, true, false, GameObjectIconType.Underground);
-        koopaTroopa_3000_352.addToGameUI(gameUI);
+        var buzzyBeetle_3000_352 = new BuzzyBeetle(3000, 352, GameObjectIconType.Underground);
+        buzzyBeetle_3000_352.addToGameUI(gameUI);
 
         for (var i = 0; i < 2; i++) {
             var brick = new Brick(2947 + 32 * i, 272, GameObjectIconType.Underground);
@@ -187,8 +187,8 @@ World_4_2 = ClassFactory.createClass(World, {
         var tube_3012_176 = new Block(3011, 176, 64, 224);
         tube_3012_176.addToGameUI(gameUI);
 
-        var koopaTroopa_3125_352 = new KoopaTroopa(3125, 352, KoopaTroopaType.Normal, true, false, GameObjectIconType.Underground);
-        koopaTroopa_3125_352.addToGameUI(gameUI);
+        var buzzyBeetle_3125_352 = new BuzzyBeetle(3125, 352, GameObjectIconType.Underground);
+        buzzyBeetle_3125_352.addToGameUI(gameUI);
 
         for (var i = 0; i < 2; i++) {
             var brick = new Brick(3075 + 32 * i, 272, GameObjectIconType.Underground);
@@ -210,11 +210,11 @@ World_4_2 = ClassFactory.createClass(World, {
         var tube_3364_304 = new Block(3363, 304, 64, 96);
         tube_3364_304.addToGameUI(gameUI);
 
-        var koopaTroopa_3690_352 = new KoopaTroopa(3690, 352, KoopaTroopaType.Normal, true, false, GameObjectIconType.Underground);
-        koopaTroopa_3690_352.addToGameUI(gameUI);
+        var buzzyBeetle_3690_352 = new BuzzyBeetle(3690, 352, GameObjectIconType.Underground);
+        buzzyBeetle_3690_352.addToGameUI(gameUI);
 
-        var koopaTroopa_3738_352 = new KoopaTroopa(3738, 352, KoopaTroopaType.Normal, true, false, GameObjectIconType.Underground);
-        koopaTroopa_3738_352.addToGameUI(gameUI);
+        var buzzyBeetle_3738_352 = new BuzzyBeetle(3738, 352, GameObjectIconType.Underground);
+        buzzyBeetle_3738_352.addToGameUI(gameUI);
 
         var block_3811_336 = new Block(3811, 336, 64, 64);
         block_3811_336.addToGameUI(gameUI);
@@ -448,6 +448,7 @@ World_4_2 = ClassFactory.createClass(World, {
         flag.addToGameUI(gameUI);
         flag.attachCollidesLeft(function (gameObject) {
             if (gameObject instanceof MarioBors) {
+                this.setCollidable(false, false, false, false);
                 this.gameUI.end();
             }
         });
