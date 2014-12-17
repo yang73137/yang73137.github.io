@@ -4,8 +4,10 @@ World_6_1 = ClassFactory.createClass(World, {
     init: function () {
         World.init.call(this);
 
-        this.setSize(6497, 448);
+        this.setSize(10275, 448);
         this.setBackgroundImage(Const.IMAGE_WORLD_6_1);
+        this.setBackgroundPosition(6, 6);
+        this.setPosition(0, 0);
         this.show();
 
         this.scrollable = true;
@@ -267,5 +269,5 @@ World_6_1 = ClassFactory.createClass(World, {
             this.state = WorldState.None;
             alert("To be contiuned......");
         }
-    }
+    },
 });
