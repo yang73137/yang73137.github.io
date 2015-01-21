@@ -32,17 +32,15 @@
         gameUI.setSize(Const.SCREEN_WIDTH, Const.SCREEN_HEIGHT);
         gameUI.show();
         gameUI.appendTo(app);
-
         gameUI.setMario(new MarioBors(0, 0));
-
+        
         var world = new World_1_1();
         world.addToGameUI(gameUI);
-
+        
         //setTimeout(function () {
         //    world.mario.setPosition(6200, 0);
         //    world.setPosition(-6000, 0);
         //}, 1200);
-        
 
         setInterval(function () {
             gameUI.update();
