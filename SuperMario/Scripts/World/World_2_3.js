@@ -33,6 +33,36 @@ World_2_3 = ClassFactory.createClass(World, {
         this.mario.addToGameUI(gameUI);
         this.mario.setPosition(84, 400 - this.mario.height);
         
+        for (var i = 0; i < 3; i++) {
+            var cheep = new Cheep(1200 + 64 * i + 1, this.height + 32 * i, false, GameObjectIconType.Ground);
+            cheep.addToGameUI(gameUI);
+        }
+        
+        for (var i = 0; i < 3; i++) {
+            var cheep = new Cheep(1500 + 64 * i, this.height + 32 * (3 - i), true, GameObjectIconType.Ground);
+            cheep.addToGameUI(gameUI);
+        }
+        
+        for (var i = 0; i < 3; i++) {
+            var cheep = new Cheep(2780 + 64 * i + 1, this.height + 32 * i, false, GameObjectIconType.Ground);
+            cheep.addToGameUI(gameUI);
+        }
+        
+        for (var i = 0; i < 3; i++) {
+            var cheep = new Cheep(4360 + 64 * i + 1, this.height + 32 * i, false, GameObjectIconType.Ground);
+            cheep.addToGameUI(gameUI);
+        }
+        
+        for (var i = 0; i < 3; i++) {
+            var cheep = new Cheep(5300 + 64 * i + 1, this.height + 32 * i, false, GameObjectIconType.Ground);
+            cheep.addToGameUI(gameUI);
+        }
+        
+        for (var i = 0; i < 3; i++) {
+            var cheep = new Cheep(5400 + 64 * i, this.height + 32 * (3 - i), true, GameObjectIconType.Ground);
+            cheep.addToGameUI(gameUI);
+        }
+        
         for (var i = 0; i < 4; i++) {
             var gold = new Gold2(1152 + 32 * i, 144, GameObjectIconType.Ground);
             gold.addToGameUI(gameUI);
@@ -212,6 +242,7 @@ World_2_3 = ClassFactory.createClass(World, {
             if (gameObject instanceof MarioBors) {
                 if (gameObject instanceof MarioBors) {
                     this.setCollidable(false, false, false, false);
+                    SoundManager.setBGM(Const.Sound.Effects.Flagpole, false, null);
                     this.gameUI.end();
                 }
             }
@@ -245,6 +276,14 @@ World_2_3 = ClassFactory.createClass(World, {
             }
             return;
         } else {
+            if (!this.initEnd) {
+                this.initEnd = true;
+                var world = this;
+                SoundManager.setBGM(Const.Sound.Effects.LevelClear, false, function () {
+                    var newWorld = new World_2_4();
+                    world.gameUI.setWorld(newWorld);
+                });
+            }
             if (this.mario.spriteType != MarioSprite.Move) {
                 this.mario.setSprite(MarioSprite.Move);
                 this.mario.moving = true;
@@ -258,10 +297,9 @@ World_2_3 = ClassFactory.createClass(World, {
             this.falling = false;
             this.mario.moveRight(2);
             this.mario.sprite.moveToNextFrame();
-        } else {
-            this.state = WorldState.None;
-            var world = new World_2_4();
-            this.gameUI.setWorld(world);
         }
+    },
+    onChangedScene: function () {
+        SoundManager.setBGM(Const.Sound.Backgrounds.OverworldTheme, true, null);
     }
 });
