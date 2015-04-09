@@ -224,6 +224,12 @@ World_2_4 = ClassFactory.createClass(World, {
         x.sprite.setBackgroundImage(Const.IMAGE_ITEMS);
         x.sprite.setBackgroundPosition(0, 464);
         x.setStoppable(true);
+        x.attachCollides(function (gameObject) {
+            if (gameObject instanceof MarioBors) {
+                var world = new World_3_1();
+                this.gameUI.gameUI.setWorld(world);
+            }
+        });
         x.addToGameUI(gameUI);
     },
     restart: function () {
@@ -240,11 +246,6 @@ World_2_4 = ClassFactory.createClass(World, {
     },
     onEnd: function() {
         if (!this.initEnd) {
-            var world = this;
-            SoundManager.setBGM(Const.Sound.Effects.WorldClear, false, function () {
-                var newWorld = new World_3_1();
-                world.gameUI.setWorld(newWorld);
-            });
             this.mario.setSprite(MarioSprite.Move);
             this.mario.moving = true;
             this.mario.movingToLeft = true;
@@ -256,8 +257,5 @@ World_2_4 = ClassFactory.createClass(World, {
         this.falling = false;
         this.mario.moveRight(2);
         this.mario.sprite.moveToNextFrame();
-    },
-    onChangedScene: function () {
-        SoundManager.setBGM(Const.Sound.Backgrounds.CastleTheme, true, null);
     }
 });

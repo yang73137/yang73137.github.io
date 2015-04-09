@@ -145,7 +145,6 @@ KoopaTroopa = ClassFactory.createClass(Enemy, {
         this.setSize(32, 32);
         this.setSpriteFrames(KoopaTroopaSpriteType.DownSide);
         this.state = KoopaTroopaState.Shell;
-        SoundManager.play(Const.Sound.Effects.Squish);
         this.speed = 5;
         this.moving = false;
     },
@@ -178,12 +177,9 @@ KoopaTroopa = ClassFactory.createClass(Enemy, {
                 this.faceToRight = gameObject.x <= this.x + this.width / 2;
                 if (this.moving) {
                     this.setX(this.faceToRight ? gameObject.x + gameObject.width + 2 : gameObject.x - this.width - 2);
-                } else {
-                    
                 }
                 gameObject.setY(this.y - gameObject.height - 5);
                 gameObject.reJump();
-                SoundManager.play(Const.Sound.Effects.Kick);
             }
         }
         else if (gameObject.stoppable) {
@@ -230,9 +226,8 @@ KoopaTroopa = ClassFactory.createClass(Enemy, {
                     this.moving = true;
                     this.setFaceDirection(true);
                     this.setX(gameObject.x + gameObject.width + 2);
-                    SoundManager.play(Const.Sound.Effects.Kick);
                 } else {
-                    gameObject.invincible ? this.dead() : gameObject.hurt();
+                        gameObject.invincible ? this.dead() : gameObject.hurt();
                 }
             }
             else if (gameObject instanceof Enemy && this.moving) {
@@ -256,7 +251,6 @@ KoopaTroopa = ClassFactory.createClass(Enemy, {
                     this.moving = true;
                     this.setFaceDirection(false);
                     this.setX(gameObject.x - this.width - 2);
-                    SoundManager.play(Const.Sound.Effects.Kick);
                 } else {
                     gameObject.invincible ? this.dead() : gameObject.hurt();
                 }
@@ -272,7 +266,6 @@ KoopaTroopa = ClassFactory.createClass(Enemy, {
     dead: function (faceToRight) {
         this.faceToRight = faceToRight;
         this.state = KoopaTroopaState.Dead;
-        SoundManager.play(Const.Sound.Effects.Squish);
         this.setCollidable(false, false, false, false);
         this.setSpriteFrames(KoopaTroopaSpriteType.Dead);
     },

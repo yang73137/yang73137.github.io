@@ -85,12 +85,9 @@ Star = ClassFactory.createClass(GameObject, {
     onCollides: function (gameObject) {
         if (gameObject instanceof MarioBors) {
             this.sprite.hide();
-            if (this.state != StarState.None) {
-                this.state = StarState.None;
-                SoundManager.play(Const.Sound.Effects.ChangeType);
-                this.setCollidable(false, false, false, false);
-                gameObject.setInvincible();
-            }
+            this.state = StarState.None;
+            this.setCollidable(false, false, false, false);
+            gameObject.setInvincible();
         }
     },
     onCollidesLeft: function (gameObject) {

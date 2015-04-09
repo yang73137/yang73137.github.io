@@ -125,7 +125,6 @@ Bowser = ClassFactory.createClass(Enemy, {
         this.sprite.setFrameSequence([{ x: 0, y: 320 }]);
         this.sprite.moveToFrame(0);
         this.setCollidable(false, false, false, false);
-        SoundManager.play(Const.Sound.Effects.BowserFalls);
     },
     onCollides: function (gameObject) {
         if (gameObject instanceof FireBall) {
@@ -180,7 +179,6 @@ BowserFire = ClassFactory.createClass(Enemy, {
         this.sprite.start();
         this.setCollidable(true, true, true, true);
         this.state = BowserFireState.Firing;
-        SoundManager.play(Const.Sound.Effects.BowserFire);
     },
     onCollidesUp: function (gameObject) {
         this.onCollidesLeft(gameObject);
