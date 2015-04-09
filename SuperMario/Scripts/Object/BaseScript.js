@@ -1,6 +1,7 @@
 ﻿
 
 document.writeln('<script src="../Scripts/Basic/ImgLoader.js"></script>');
+document.writeln('<script src="../Scripts/Basic/SoundManager.js"></script>');
 document.writeln('<script src="../Scripts/Basic/ClassFactory.js"></script>');
 document.writeln('<script src="../Scripts/Basic/Const.js"></script>');
 document.writeln('<script src="../Scripts/Basic/Counter.js"></script>');
@@ -31,3 +32,7 @@ document.writeln('<script src="../Scripts/Object/Lakitu.js"></script>');
 document.writeln('<script src="../Scripts/Object/BillBlaster.js"></script>');
 document.writeln(' <script src="../Scripts/Object/HammerBrother.js"></script>');
 document.writeln(' <script src="../Scripts/Object/Bubble.js"></script>');
+document.writeln(' <script src="../Scripts/Object/Cheep.js"></script>');
+document.writeln(' <script src="../Scripts/Object/Blurp.js"></script>');
+
+document.writeln('<div id="sound" style="display: none;"></div>');
